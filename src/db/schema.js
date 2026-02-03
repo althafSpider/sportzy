@@ -51,3 +51,4 @@ export const Match = matches;
 export const NewMatch = matches;
 export const Commentary = commentary;
 export const NewCommentary = commentary;
+// added for type safety in queries
