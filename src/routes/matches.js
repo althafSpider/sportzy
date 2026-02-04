@@ -1,17 +1,15 @@
-import express from 'express';
-import { createMatchSchema, listMatchesQuerySchema } from '../validation/matches';
-import { db } from '../db/db';
-import { matches } from '../db/schema';
-import { getMatchStatus } from '../utils/match-status';
-import { desc } from 'drizzle-orm';
-
-const matchRouter = express.Router();
+import { Router } from 'express';
+import {createMatchSchema, listMatchesQuerySchema} from "../validation/matches.js";
+import {matches} from "../db/schema.js";
+import {db} from "../db/db.js";
+import {getMatchStatus} from "../utils/match-status.js";
+import {desc} from "drizzle-orm";
+ const matchRouter = Router();
 
 const MAX_LIMIT = 100;
 
 matchRouter.get('/', async (req, res) => {
     const parsed = listMatchesQuerySchema.safeParse(req.query);
-
     if (!parsed.success) {
         return res.status(400).json({error: 'Invalid query.', details: parsed.error.issues });
     }
