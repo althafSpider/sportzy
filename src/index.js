@@ -1,9 +1,15 @@
 import express from 'express';
 import matchRoutes from './routes/matches.js';
-const app = express();
-const PORT = 8000;
+import http from 'http';
+import { attachWebscoketServer } from './ws/server.js';
 
-// Use JSON middleware
+const PORT = Number(process.env.PORT) || 8000;
+const HOST = process.env.HOST || '0.0.0.0';
+
+const app = express();
+
+const server = http.createServer(app);
+
 app.use(express.json());
 
 // Root GET route
@@ -13,8 +19,13 @@ app.get('/', (req, res) => {
 
 app.use('/matches', matchRoutes);
 
+const { broadcastMatchCreated } = attachWebscoketServer(server);
+app.locals.broadcastMatchCreated = broadcastMatchCreated;
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`Server URL: http://localhost:${PORT}`);
+
+server.listen(PORT, HOST, () => {
+    const baseUrl = HOST === '0.0.0.0' ? `http://localhost:${PORT}` : `http://${HOST}:${PORT}`;
+
+    console.log(`Server is running on ${baseUrl}`);
+    console.log(`WebSocket Server is running on ${baseUrl.replace('http', 'ws')}/ws`);
 });

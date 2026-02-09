@@ -44,6 +44,11 @@ matchRouter.post("/", async (req, res) => {
       awayScore: awayScore ?? 0,
        status: getMatchStatus(startTime, endTime),
     }).returning()
+    if(res.app.locals.broadcastMatchCreated){
+      res.app.locals.broadcastMatchCreated(event);
+    }
+      
+    return res.status(201).json({ data: event });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update score' });
   }
