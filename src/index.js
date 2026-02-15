@@ -1,8 +1,9 @@
 import express from 'express';
 import matchRoutes from './routes/matches.js';
+import commentaryRoutes from './routes/commentary.js';
 import http from 'http';
-import { attachWebscoketServer } from './ws/server.js';
 import { securityMiddleware } from './arcjet.js';
+import { attachWebSocketServer } from './ws/server.js';
 
 const PORT = Number(process.env.PORT) || 8000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -21,8 +22,9 @@ app.get('/', (req, res) => {
 app.use(securityMiddleware())
 
 app.use('/matches', matchRoutes);
+app.use('/matches/:id', commentaryRoutes);
 
-const { broadcastMatchCreated } = attachWebscoketServer(server);
+const { broadcastMatchCreated } = attachWebSocketServer(server);
 app.locals.broadcastMatchCreated = broadcastMatchCreated;
 // Start the server
 
